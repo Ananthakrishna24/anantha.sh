@@ -13,7 +13,7 @@
   const screens = [Hello, Work, Projects, Contact]
 
   const saved = localStorage.getItem('v6-theme')
-  let theme = $state(saved === 'dark' ? 'dark' : 'light')
+  let theme = $state(saved === 'light' ? 'light' : 'dark')
   let screen = $state(0)
   let accentIdx = $state(0)
   let clock = $state('')
