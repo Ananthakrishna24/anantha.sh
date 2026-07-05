@@ -2,6 +2,7 @@
   import { onMount } from 'svelte'
   import { motion, spawnWave, startWipe } from './fx.js'
   import PixelCanvas from './PixelCanvas.svelte'
+  import Cat from './Cat.svelte'
   import Hello from './Hello.svelte'
   import Work from './Work.svelte'
   import Projects from './Projects.svelte'
@@ -82,6 +83,7 @@
 <svelte:window onkeydown={onKey} />
 
 <PixelCanvas />
+<Cat {screen} {theme} />
 
 <header class="px">
   <span>ANANTH.EXE</span>
