@@ -238,7 +238,8 @@ footer button {
   transition: background 0.2s;
 }
 footer button:hover { background: var(--ink); color: var(--paper); }
-#theme-btn { margin-left: auto; border-right: none; border-left: 1px solid var(--line); letter-spacing: 0.06em; font-size: 10.5px; }
+#hello-btn { margin-left: auto; border-right: none; border-left: 1px solid var(--line); letter-spacing: 0.06em; font-size: 10.5px; }
+#theme-btn { border-right: none; border-left: 1px solid var(--line); letter-spacing: 0.06em; font-size: 10.5px; }
 #clock { border-right: none; border-left: 1px solid var(--line); font-variant-numeric: tabular-nums; }
 .dim { opacity: 0.65; }
 

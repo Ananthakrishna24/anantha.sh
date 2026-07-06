@@ -4,6 +4,10 @@
   let { oncontact } = $props()
   let show = $state(false)
 
+  export function open() {
+    show = true
+  }
+
   onMount(() => {
     if (localStorage.getItem('v6-intro')) return
     const t = setTimeout(() => (show = true), 2000)

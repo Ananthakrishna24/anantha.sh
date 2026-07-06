@@ -46,6 +46,7 @@
     if (n >= 1 && n <= 4) goTo(n - 1)
   }
 
+  let intro
   let touchX = null
   function touchStart(e) {
     touchX = e.touches[0].clientX
@@ -85,7 +86,7 @@
 
 <PixelCanvas />
 <Cat {screen} {theme} />
-<Intro oncontact={() => goTo(3)} />
+<Intro bind:this={intro} oncontact={() => goTo(3)} />
 
 <header class="px">
   <span>ANANTH.SH</span>
@@ -112,6 +113,7 @@
   <button aria-label="Next screen" onclick={() => nav(1)}>→</button>
   <span class="dim">SCR {screen + 1}/4</span>
   <span class="dim hide-sm">{copy}</span>
+  <button id="hello-btn" aria-label="Read the welcome note" onclick={() => intro.open()}>✉ HELLO.TXT</button>
   <button id="theme-btn" onclick={toggleTheme}>◐ {theme === 'dark' ? 'LIGHT' : 'DARK'}</button>
   <span class="hide-sm" id="clock">{clock}</span>
 </footer>
