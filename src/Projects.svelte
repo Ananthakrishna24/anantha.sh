@@ -13,7 +13,7 @@
         <div class="card-body">
           <div class="role">A CODING AGENT IN A TERMINAL</div>
           <ul>
-            <li>Reads, writes, runs shell commands, keeps memory across steps — an LLM tool loop, no IDE.</li>
+            <li>Reads, writes, runs shell commands, keeps memory across steps: an LLM tool loop, no IDE.</li>
             <li>Modular tool registry: workspace-confined file ops, grep/glob, diff review, spawnable helper agents.</li>
             <li>OpenRouter, OpenAI, Mistral; ships as a global npm CLI.</li>
           </ul>
@@ -27,7 +27,7 @@
           <div class="role">ASK YOUR BANK STATEMENT ANYTHING</div>
           <ul>
             <li>Plain-language questions over transactions; insights stream back as they're generated.</li>
-            <li>FastAPI over WebSockets; every model output schema-validated — failed parses retried, never shown.</li>
+            <li>FastAPI over WebSockets; every model output schema-validated; failed parses retried, never shown.</li>
             <li>RAG on pgvector for semantic search over transaction history.</li>
           </ul>
           <div class="stack">PYTHON · FASTAPI · PGVECTOR</div>

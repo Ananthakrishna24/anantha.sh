@@ -21,7 +21,7 @@
     <div>
       <div class="eyebrow">&gt; CHAPTER 04 / 04</div>
       <h2>YOUR MOVE.</h2>
-      <p class="lede" style="font-size:15.5px;line-height:1.7;opacity:0.8;max-width:420px;margin-top:18px">Building something interesting? The itch is contagious. Write a message — sending opens your mail app with everything filled in.</p>
+      <p class="lede" style="font-size:15.5px;line-height:1.7;opacity:0.8;max-width:420px;margin-top:18px">Building something interesting? The itch is contagious. Write a message; sending opens your mail app with everything filled in.</p>
       <div class="links" style="margin-top:24px;gap:14px">
         <a class="btn sm" style="background:var(--paper)" href="https://github.com/Ananthakrishna24" target="_blank" rel="noreferrer">GITHUB ↗</a>
         <a class="btn sm" style="background:var(--paper)" href="https://www.linkedin.com/in/ananthakrishna-s-1a83841b0/" target="_blank" rel="noreferrer">LINKEDIN ↗</a>

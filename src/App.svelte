@@ -88,7 +88,7 @@
 <Intro oncontact={() => goTo(3)} />
 
 <header class="px">
-  <span>ANANTH.EXE</span>
+  <span>ANANTH.SH</span>
   <nav>
     {#each tabs as label, i}
       <button data-active={String(i === screen)} onclick={() => goTo(i)}>{label}</button>

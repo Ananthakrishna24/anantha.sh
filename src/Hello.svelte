@@ -57,7 +57,7 @@
       {/each}
     </h1>
     <div class="sub px">SOFTWARE ENGINEER · BANGALORE, IN · UTC+05:30</div>
-    <p class="lede" style="font-size:16.5px;line-height:1.7;opacity:1;margin-top:30px">I like tools that stay out of the way — small, fast, and honest about what they do. Most of what I build starts as an itch. Lately the itch is agents.</p>
+    <p class="lede" style="font-size:16.5px;line-height:1.7;opacity:1;margin-top:30px">I like tools that stay out of the way: small, fast, and honest about what they do. Most of what I build starts as an itch. Lately the itch is agents.</p>
     <div class="links" style="margin-top:34px">
       <a class="btn" href="https://github.com/Ananthakrishna24" target="_blank" rel="noreferrer">GITHUB ↗</a>
       <a class="btn" href="https://www.linkedin.com/in/ananthakrishna-s-1a83841b0/" target="_blank" rel="noreferrer">LINKEDIN ↗</a>

@@ -26,9 +26,9 @@
         <button class="x px" onclick={close} aria-label="Close">✕</button>
       </div>
       <div class="body">
-        <p>however you got here — my resume, a link, or the universe routing you my way — welcome. glad you made it.</p>
-        <p>i love building things. this folio is one of them: made in my free time, for the joy of it. so click around. pet the cat. keep going — you'll know when to stop.</p>
-        <p>recruiter? building something of your own? say hi on the contact page or mail me directly. tell me what you're making — i'd genuinely love to pitch in.</p>
+        <p>maybe my resume brought you here. maybe a link, or the universe itself. either way, welcome. glad you made it.</p>
+        <p>i love building things. this folio is one of them: made in my free time, for the joy of it. so click around. pet the cat. keep going. you'll know when to stop.</p>
+        <p>recruiter? building something of your own? say hi on the contact page or mail me directly. tell me what you're making. i'd genuinely love to pitch in.</p>
         <div class="row">
           <button class="btn sm px" onclick={close}>EXPLORE →</button>
           <button class="btn sm px" onclick={() => { close(); oncontact() }}>CONTACT</button>

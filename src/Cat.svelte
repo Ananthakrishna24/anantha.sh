@@ -166,6 +166,19 @@
     }
   }
 
+  // random target that stays off the content column, so zoomies/wandering never cover text
+  function freeSpot() {
+    const box = document.querySelector('main .inner')?.getBoundingClientRect()
+    const pad = SIZE / 2 + 8
+    for (let i = 0; i < 14; i++) {
+      const fx = 40 + Math.random() * (window.innerWidth - 80)
+      const fy = 80 + Math.random() * (window.innerHeight - 160)
+      if (!box || fx + pad < box.left || fx - pad > box.right || fy + pad < box.top || fy - pad > box.bottom) return [fx, fy]
+    }
+    // ponytail: content fills the screen (mobile) — retreat to the home corner
+    return [window.innerWidth - SIZE / 2 - 24, window.innerHeight - SIZE / 2 - 70]
+  }
+
   function place() {
     el.style.transform = `translate(${x}px, ${y}px)`
     canvas.style.transform = facingRight ? 'scaleX(-1)' : ''
@@ -262,8 +275,7 @@
     // ponytail: coarse pointers have no cursor to chase — wander instead
     const wander = coarse
       ? setInterval(() => {
-          tx = 40 + Math.random() * (window.innerWidth - 80)
-          ty = 80 + Math.random() * (window.innerHeight - 160)
+          ;[tx, ty] = freeSpot()
         }, 9000)
       : 0
 
@@ -284,8 +296,7 @@
       const zooming = now < zoomUntil
       if (zooming && now - zoomPick > 350) {
         zoomPick = now
-        tx = 40 + Math.random() * (window.innerWidth - 80)
-        ty = 80 + Math.random() * (window.innerHeight - 160)
+        ;[tx, ty] = freeSpot()
       }
 
       const dx = tx - (x + SIZE / 2), dy = ty - (y + SIZE / 2)
