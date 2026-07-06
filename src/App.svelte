@@ -7,6 +7,7 @@
   import Work from './Work.svelte'
   import Projects from './Projects.svelte'
   import Contact from './Contact.svelte'
+  import Intro from './Intro.svelte'
 
   const accents = ['#2f9e5b', '#3b6fd9', '#d9772f', '#c74b8f']
   const tabs = ['01 HELLO', '02 WORK', '03 PROJECTS', '04 CONTACT']
@@ -84,6 +85,7 @@
 
 <PixelCanvas />
 <Cat {screen} {theme} />
+<Intro oncontact={() => goTo(3)} />
 
 <header class="px">
   <span>ANANTH.EXE</span>
