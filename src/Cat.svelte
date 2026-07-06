@@ -27,6 +27,7 @@
   let animFlip = false, lastAnim = 0, lastRipple = 0, lastFrame = ''
   let petCount = 0, runDist = 0, zoomUntil = 0, zoomPick = 0, lastZoom = 0
   let pose = '', poseUntil = 0
+  let cradled = true
   const quipAt = {}
   let lastSayAt = 0
 
@@ -125,8 +126,28 @@
   // left-eye pixel per frame; faces are drawn as overlays relative to it
   const FACE_ANCHOR = { sit: [2, 5], sit2: [2, 5], groom1: [2, 5], groom2: [2, 5], stretch: [2, 10], run1: [2, 6], run2: [2, 6] }
 
+  // accent wicker basket, drawn over the cat's lower half while cradled
+  const BASKET = [
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    'aaaaaaaaaaaaaaaa',
+    'a..aa..aa..aa..a',
+    'a..aa..aa..aa..a',
+    '.aa..aa..aa..aa.',
+    '.aaaaaaaaaaaaaa.',
+    '..aaaaaaaaaaaa..',
+  ]
+
   function draw(name) {
-    const key = name + '|' + face
+    const key = name + '|' + face + (cradled ? '|c' : '')
     if (key === lastFrame) return
     lastFrame = key
     const st = getComputedStyle(document.body)
@@ -135,12 +156,24 @@
     const paper = st.getPropertyValue('--paper').trim() || '#f7f5ee'
     ctx.clearRect(0, 0, SIZE, SIZE)
     const map = SPRITES[name]
+    // sleeping sprite is low and flat; lift it so it loafs on the basket rim
+    const oy = cradled && name.startsWith('sleep') ? -3 : 0
     for (let ry = 0; ry < PX; ry++) {
       for (let rx = 0; rx < PX; rx++) {
         const c = map[ry][rx]
         if (c === '.') continue
         ctx.fillStyle = c === 'a' ? accent : ink
-        ctx.fillRect(rx * S, ry * S, S, S)
+        ctx.fillRect(rx * S, (ry + oy) * S, S, S)
+      }
+    }
+    if (cradled) {
+      for (let ry = 0; ry < PX; ry++) {
+        for (let rx = 0; rx < PX; rx++) {
+          if (BASKET[ry][rx] === 'a') {
+            ctx.fillStyle = accent
+            ctx.fillRect(rx * S, ry * S, S, S)
+          }
+        }
       }
     }
     const anchor = FACE_ANCHOR[name]
@@ -236,6 +269,13 @@
   onMount(() => {
     ctx = canvas.getContext('2d')
 
+    // start cradled bottom-right, basket resting on the footer line
+    const foot = document.querySelector('footer')?.getBoundingClientRect()
+    x = window.innerWidth - SIZE - 28
+    y = foot ? foot.top - SIZE - 10 : window.innerHeight - SIZE - 70
+    tx = x + SIZE / 2
+    ty = y + SIZE / 2
+
     if (!motion) {
       // reduced motion: cat sits in the corner, silent
       draw('sit')
@@ -243,11 +283,16 @@
       return
     }
 
+    const greet = setTimeout(() => say("helo. he's not here. i speak for the human.", 5500), 900)
+
+    let sawInput = false
     function onMouse(e) {
+      sawInput = true
       tx = e.clientX
       ty = e.clientY + 14
     }
     function onTouch(e) {
+      sawInput = true
       tx = e.touches[0].clientX
       ty = e.touches[0].clientY + 14
     }
@@ -287,7 +332,7 @@
       const now = Date.now()
 
       // zoomies: rare burst of sprinting between random points
-      if (mode === 'sit' && now - idleSince > 4000 && now - lastZoom > 45000 && Math.random() < 0.002) {
+      if (!cradled && mode === 'sit' && now - idleSince > 4000 && now - lastZoom > 45000 && Math.random() < 0.002) {
         lastZoom = now
         zoomUntil = now + 2400
         say(pick('zoom'))
@@ -302,6 +347,13 @@
       const dx = tx - (x + SIZE / 2), dy = ty - (y + SIZE / 2)
       const dist = Math.hypot(dx, dy)
 
+      // cradle breaks when the cursor comes close or a screen wipe kicks the cat
+      if (cradled && ((sawInput && dist < 90) || kick > 0.5)) {
+        cradled = false
+        lastFrame = ''
+        say('fine. i was comfy.', 2200)
+      }
+
       if (kick > 0.5) {
         x += kick * (dt / 16.7)
         kick *= 0.9
@@ -309,7 +361,7 @@
         mode = 'run'
         idleSince = now
       } else if (mode === 'sleep') {
-        if (dist > 70) {
+        if (dist > 70 && !cradled) {
           mode = 'sit'
           say(pick('wake'), 1500)
           setFace('wide', 1500)
@@ -322,7 +374,7 @@
         // startled — frozen for a beat
       } else if (pose === 'stretch' && now < poseUntil) {
         // big stretch before doing anything else
-      } else if (dist > STOP || zooming) {
+      } else if (!cradled && (dist > STOP || zooming)) {
         if (pose) {
           pose = ''
           if (face === 'blink') { face = 'normal'; faceUntil = 0; lastFrame = '' }
@@ -404,6 +456,7 @@
       document.removeEventListener('focusin', onFocus)
       window.removeEventListener('keydown', onKeys)
       if (wander) clearInterval(wander)
+      clearTimeout(greet)
       clearTimeout(bubbleTimer)
     }
   })
