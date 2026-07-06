@@ -1,6 +1,8 @@
 <script>
   import { onMount } from 'svelte'
   import { motion, spawnWave } from './fx.js'
+  import { CAT as SPRITES } from './sprites.js'
+  import Story from './Story.svelte'
 
   let { screen, theme } = $props()
 
@@ -8,102 +10,10 @@
   const STOP = 46, SPEED = 3, SLEEP_MS = 20000
   const coarse = window.matchMedia('(pointer: coarse)').matches
 
-  // '.'=empty '#'=ink 'a'=accent — art faces left, CSS-flipped when running right
-  const SPRITES = {
-    sit: [
-      '................',
-      '..#...#.........',
-      '..##.##.........',
-      '..#####.........',
-      '.#######........',
-      '.#a#a###........',
-      '.#######........',
-      '..#####.........',
-      '..#####.....#...',
-      '..######...##...',
-      '.#######...##...',
-      '.########..##...',
-      '.########..##...',
-      '.#########.##...',
-      '.###########....',
-      '................',
-    ],
-    run1: [
-      '................',
-      '................',
-      '................',
-      '................',
-      '.#..#...........',
-      '.#####..........',
-      '.#a#a##.......#.',
-      '.#############..',
-      '..############..',
-      '..###########...',
-      '.##..##...##....',
-      '#......#....#...',
-      '................',
-      '................',
-      '................',
-      '................',
-    ],
-    run2: [
-      '................',
-      '................',
-      '................',
-      '................',
-      '.#..#...........',
-      '.#####..........',
-      '.#a#a##....##...',
-      '.############...',
-      '..###########...',
-      '...##########...',
-      '...###...###....',
-      '...###...###....',
-      '................',
-      '................',
-      '................',
-      '................',
-    ],
-    sleep1: [
-      '................',
-      '................',
-      '................',
-      '................',
-      '................',
-      '................',
-      '................',
-      '................',
-      '................',
-      '...#.#..........',
-      '..##########....',
-      '.############...',
-      '.##############.',
-      '..############..',
-      '................',
-      '................',
-    ],
-    sleep2: [
-      '................',
-      '................',
-      '................',
-      '................',
-      '................',
-      '................',
-      '................',
-      '................',
-      '................',
-      '................',
-      '...#.#..........',
-      '..###########...',
-      '.##############.',
-      '..############..',
-      '................',
-      '................',
-    ],
-  }
 
   let el, canvas, ctx
   let bubble = $state('')
+  let storyOpen = $state(false)
   let bubbleBelow = $state(false)
   let bubbleEdge = $state('')
   let bubbleTimer
@@ -116,6 +26,7 @@
   let idleSince = Date.now(), wakeUntil = 0, kick = 0
   let animFlip = false, lastAnim = 0, lastRipple = 0, lastFrame = ''
   let petCount = 0, runDist = 0, zoomUntil = 0, zoomPick = 0, lastZoom = 0
+  let pose = '', poseUntil = 0
   const quipAt = {}
   let lastSayAt = 0
 
@@ -212,7 +123,7 @@
   }
 
   // left-eye pixel per frame; faces are drawn as overlays relative to it
-  const FACE_ANCHOR = { sit: [2, 5], run1: [2, 6], run2: [2, 6] }
+  const FACE_ANCHOR = { sit: [2, 5], sit2: [2, 5], groom1: [2, 5], groom2: [2, 5], stretch: [2, 10], run1: [2, 6], run2: [2, 6] }
 
   function draw(name) {
     const key = name + '|' + face
@@ -247,6 +158,11 @@
     } else if (face === 'wide' || face === 'derp') {
       px(ex, ey - 1, accent); px(ex + 2, ey - 1, accent)     // big eyes
       if (face === 'derp') { px(ex + 1, ey + 2, paper); px(ex + 1, ey + 3, paper) } // tongue out
+    } else if (face === 'love') {
+      px(ex, ey, paper); px(ex + 2, ey, paper); px(ex + 1, ey + 2, paper) // happy base
+      px(ex + 6, ey - 4, accent); px(ex + 8, ey - 4, accent)              // tiny heart
+      px(ex + 6, ey - 3, accent); px(ex + 7, ey - 3, accent); px(ex + 8, ey - 3, accent)
+      px(ex + 7, ey - 2, accent)
     }
   }
 
@@ -260,12 +176,28 @@
   }
 
   function pet() {
+    // past the full ladder, a pet rolls the movie instead
+    if (petCount >= POOLS.pet.length && motion) {
+      bubble = ''
+      clearTimeout(bubbleTimer)
+      storyOpen = true
+      return
+    }
     // escalation ladder, not random — repeated petting changes the relationship
     say(POOLS.pet[Math.min(petCount, POOLS.pet.length - 1)])
-    setFace(petCount < 3 ? 'annoyed' : 'happy', 2500)
+    setFace(petCount < 3 ? 'annoyed' : petCount < 5 ? 'happy' : 'love', 2500)
     petCount++
+    if (petCount === POOLS.pet.length && motion) {
+      setTimeout(() => say('...okay. ONE more pet. i will show you everything.', 6000), 3500)
+    }
     idleSince = Date.now()
     if (mode === 'sleep') mode = 'sit'
+  }
+  function closeStory() {
+    storyOpen = false
+    idleSince = Date.now()
+    say('that never happened.', 4000)
+    setFace('love', 2500)
   }
 
   // theme flip quips — skip initial value
@@ -371,11 +303,19 @@
           say(pick('wake'), 1500)
           setFace('wide', 1500)
           wakeUntil = now + 400
+          pose = 'stretch'
+          poseUntil = now + 1800
           idleSince = now
         }
       } else if (now < wakeUntil) {
         // startled — frozen for a beat
+      } else if (pose === 'stretch' && now < poseUntil) {
+        // big stretch before doing anything else
       } else if (dist > STOP || zooming) {
+        if (pose) {
+          pose = ''
+          if (face === 'blink') { face = 'normal'; faceUntil = 0; lastFrame = '' }
+        }
         mode = 'run'
         if (dist > 0.5) {
           // ease in near the target so arrivals look like a cat, not a missile
@@ -403,9 +343,18 @@
           runDist = 0
         }
         if (mode === 'sit' && face === 'normal' && Math.random() < 0.004) setFace('blink', 160)
+        // idle body language: tail flick, grooming, getting drowsy before the nap
+        if (mode === 'sit' && !pose && Math.random() < 0.003) { pose = 'flick'; poseUntil = now + 500 }
+        if (mode === 'sit' && !pose && now - idleSince > 8000 && Math.random() < 0.0008) {
+          pose = 'groom'
+          poseUntil = now + 2600
+          setFace('blink', 2600)
+        }
+        if (mode === 'sit' && now - idleSince > SLEEP_MS - 3500 && face === 'normal') setFace('annoyed', 3600)
         if (mode === 'sit' && now - idleSince > 6000 && Math.random() < 0.0006) quip('mutter', 25000)
         if (mode === 'sit' && now - idleSince > SLEEP_MS) {
           mode = 'sleep'
+          pose = ''
           say('zzz', 3000)
         }
       }
@@ -414,16 +363,24 @@
         face = 'normal'
         lastFrame = ''
       }
+      if (pose && now > poseUntil) pose = ''
 
       x = Math.max(2, Math.min(window.innerWidth - SIZE - 2, x))
       y = Math.max(2, Math.min(window.innerHeight - SIZE - 2, y))
 
-      if (t - lastAnim > (mode === 'sleep' ? 900 : 140)) {
+      if (t - lastAnim > (mode === 'sleep' ? 900 : pose === 'groom' ? 320 : 140)) {
         lastAnim = t
         animFlip = !animFlip
         lastFrame = '' // theme/accent may have changed; force redraw
       }
-      draw(mode === 'run' ? (animFlip ? 'run1' : 'run2') : mode === 'sleep' ? (animFlip ? 'sleep1' : 'sleep2') : 'sit')
+      draw(
+        mode === 'run' ? (animFlip ? 'run1' : 'run2')
+        : mode === 'sleep' ? (animFlip ? 'sleep1' : 'sleep2')
+        : pose === 'stretch' ? 'stretch'
+        : pose === 'groom' ? (animFlip ? 'groom1' : 'groom2')
+        : pose === 'flick' ? 'sit2'
+        : 'sit'
+      )
       place()
     }
     raf = requestAnimationFrame(loop)
@@ -440,6 +397,10 @@
     }
   })
 </script>
+
+{#if storyOpen}
+  <Story onclose={closeStory} />
+{/if}
 
 <div id="cat" bind:this={el} onclick={pet} aria-hidden="true">
   {#if bubble}

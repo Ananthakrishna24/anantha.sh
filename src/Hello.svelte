@@ -31,14 +31,6 @@
       flip = !flip
       flipped = [false, false, false, false, false, false, false]
       onflip()
-      for (let i = 0; i < 7; i++) {
-        setTimeout(() => {
-          const el = letterEls[i]
-          if (!el || !el.isConnected) return
-          const r = el.getBoundingClientRect()
-          spawnWave(r.left + r.width / 2, r.bottom + 6, { maxR: 5.5, speed: 1.1, squash: 0.7 })
-        }, 460 + i * 70)
-      }
     }, 5000)
     return () => clearInterval(id)
   })
