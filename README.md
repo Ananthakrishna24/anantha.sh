@@ -1,25 +1,35 @@
 # anantha.sh
 
-Personal portfolio site for Me. A single-page Svelte 5 app with four screens, a pixel-canvas backdrop, animated transitions, and a light/dark theme.
+> READY.
 
-## Features
+my corner of the internet. built pixel by pixel, in free time, for the joy of it.
 
-- **Four screens** — `01 HELLO`, `02 WORK`, `03 PROJECTS`, `04 CONTACT`, each with its own accent color.
-- **Navigation** — click tabs, arrow keys (`←`/`→`), number keys (`1`–`4`), or swipe on touch devices.
-- **Pixel canvas** — reactive animated background (`PixelCanvas.svelte` + `fx.js`).
-- **Theme toggle** — light/dark with an animated wipe, persisted to `localStorage`.
-- **Live IST clock** in the footer.
-- **Respects `prefers-reduced-motion`** — animations disable when the OS asks.
+no template. no framework-of-the-week. just Svelte, a canvas, and more love
+than any portfolio strictly needs.
 
-## Stack
+**[→ visit](https://ananthakrishna-s.netlify.app/)**
 
-Svelte 5 (runes) · Vite · deployed on Netlify.
+## what lives here
 
-## Develop
+- a cat. 48 pixels of pure menace. it chases your cursor, naps in a basket,
+  judges your theme choices, and files every pet as billable.
+- easter eggs. pet the cat. keep petting. you'll know when to stop.
+- four screens, a wandering accent color, a clock ticking in IST.
+- there is more. the cat knows. the cat tells no one.
+
+## why
+
+because i love building things, and the things i love most are the ones
+nobody asked for. the site holds the info. this repo holds the passion.
+
+## run it
 
 ```bash
-npm install
-npm run dev      # dev server with HMR
-npm run build    # production build -> dist/
-npm run preview  # serve the build locally
+npm install && npm run dev
 ```
+
+that's it. the cat handles QA.
+
+---
+
+© ANANTHAKRISHNA S · SCR 1/4 · 09:41:00 IST
